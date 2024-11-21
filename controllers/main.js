@@ -1,4 +1,14 @@
+const CustomAPIError=require("../errors/custom-error");
+
 const loginController=async(req,res,next)=>{
+    const {userName,password}=req.body;
+    if(!userName || !password){
+        /*
+        ->Note that the throw keyword stops the execution of the code and throws an
+        error object to the error handling middleware.
+        */ 
+        throw new CustomAPIError("Plese provide both username and password🍃",400)
+    }
     res.send(`Fake login with userName😅:${req.body.userName}`);
 }
 
