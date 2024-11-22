@@ -28,25 +28,10 @@ const loginController = async (req, res, next) => {
 };
 
 const dashBoardController = (req, res, next) => {
-  
-  //  Here I need to verify the token that we receive
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new CustomAPIError("No token provided🚩", 401);
-  }
-  const token = authHeader.split(" ")[1];
-  // Once I have extracted the token, I need to verify the token using the jwt.verify() method
-  try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const luckyNumber = Math.floor(Math.random() * 100);
-    res.status(200).json({
-      message: `Helloooo ${decodedToken.userName}🐰`,
-      secretData: `Here is your secret data with the code ${luckyNumber}`,
-    });
-  } catch (error) {
-    // If we are not able to verify the token then send an error
-    throw new CustomAPIError("Token Not verified.....Not authorised to access this route😠",401);
-  }
+  res.status(200).json({
+    message: `Helloooo ${req.user.userName}🐰`,
+    secretData: `Here is your secret data with the code ${req.user.luckyNumber}`,
+  });
 };
 
 module.exports = {

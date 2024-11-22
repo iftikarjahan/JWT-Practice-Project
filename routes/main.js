@@ -1,6 +1,7 @@
 const express=require("express");
 const router=express.Router();
 const controllersObject=require("../controllers/main");
+const authMiddleware=require("../middleware/auth");
 
 /*
 ->When this requset is done, the token that is generated is stored in the local storage
@@ -12,6 +13,6 @@ router.route("/login").post(controllersObject.loginController);
 authorization header from the local storage(check the browser-app.js file), so that it could 
 be sent back to the backend for verification in the subsequent requests.
 */ 
-router.route("/dashboard").get(controllersObject.dashBoardController);
+router.route("/dashboard").get(authMiddleware,controllersObject.dashBoardController);
 
 module.exports=router;
