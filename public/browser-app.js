@@ -11,11 +11,18 @@ formDOM.addEventListener('submit', async (e) => {
   tokenDOM.classList.remove('text-success')
 
   e.preventDefault()
-  const username = usernameInputDOM.value
+  const userName = usernameInputDOM.value
   const password = passwordInputDOM.value
+  // console.log(username,password);
+  
 
   try {
-    const { data } = await axios.post('/api/v1/login', { username, password })
+    // this line sends a post request to the server using axios with username and password
+    // in postman, we were doing it manually
+    // the response received from the server is received in the data variable
+    const { data } = await axios.post('/api/v1/login', { userName, password })
+
+    
 
     formAlertDOM.style.display = 'block'
     formAlertDOM.textContent = data.msg
@@ -24,7 +31,9 @@ formDOM.addEventListener('submit', async (e) => {
     usernameInputDOM.value = ''
     passwordInputDOM.value = ''
 
-    localStorage.setItem('token', data.token)
+    // see here the generated token from the backend is stored in the local storage
+    localStorage.setItem('token', data.jwtToken)
+
     resultDOM.innerHTML = ''
     tokenDOM.textContent = 'token present'
     tokenDOM.classList.add('text-success')
@@ -42,6 +51,12 @@ formDOM.addEventListener('submit', async (e) => {
 })
 
 btnDOM.addEventListener('click', async () => {
+  /*
+  ->The token that is stored in the local storage(frontend) is sent with the subsequent 
+  request using the authorization header
+  ->So, you can always take this token from the local storage and pass it to every subsequent
+  requsts using the authorization header
+  */
   const token = localStorage.getItem('token')
   try {
     const { data } = await axios.get('/api/v1/dashboard', {
@@ -49,7 +64,7 @@ btnDOM.addEventListener('click', async () => {
         Authorization: `Bearer ${token}`,
       },
     })
-    resultDOM.innerHTML = `<h5>${data.msg}</h5><p>${data.secret}</p>`
+    resultDOM.innerHTML = `<h5>${data.message}</h5><p>${data.secretData}</p>`
 
     data.secret
   } catch (error) {
