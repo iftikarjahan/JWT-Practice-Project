@@ -1,16 +1,15 @@
 const { use } = require("express/lib/router");
-const CustomAPIError = require("../errors/custom-error");
+const { UnauthenticatedError } = require("../errors");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 //This would be used for creating a more generalised workflow
 const authMiddleware = (req, res, next) => {
-    
   //  Here I need to verify the token that we receive
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new CustomAPIError("No token provided🚩", 401);
+    throw new UnauthenticatedError("No token provided🚩");
   }
   const token = authHeader.split(" ")[1];
 
@@ -22,15 +21,14 @@ const authMiddleware = (req, res, next) => {
     ->Now we are going to attach a custom property to the req object 
     ->This is a general method to transfer data from one middleware function to the other
     */
-   const{id,userName}=decodedToken;
-   
-   req.user={luckyNumber,id,userName}; //now this data could be accessed in other middlewares using the req.user object
-   next();
+    const { id, userName } = decodedToken;
+
+    req.user = { luckyNumber, id, userName }; //now this data could be accessed in other middlewares using the req.user object
+    next();
   } catch (error) {
     // If we are not able to verify the token then send an error
-    throw new CustomAPIError(
-      "Token Not verified.....Not authorised to access this route😠",
-      401
+    throw new UnauthenticatedError(
+      "Token Not verified.....Not authorised to access this route😠"
     );
   }
 };

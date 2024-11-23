@@ -1,5 +1,5 @@
 const { use } = require("express/lib/router");
-const CustomAPIError = require("../errors/custom-error");
+const {BadRequest} = require("../errors");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
@@ -11,7 +11,7 @@ const loginController = async (req, res, next) => {
         ->Note that the throw keyword stops the execution of the code and throws an
         error object to the error handling middleware.
         */
-    throw new CustomAPIError("Plese provide both username and password🍃", 400);
+    throw new BadRequest("Plese provide both username and password🍃");
   }
   /*
     ->Using the JWT.sign method, we can create a JWT token
